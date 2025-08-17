@@ -1,5 +1,4 @@
-# scripts/generate_post.py
-import os, re, json, random, textwrap
+import os, re, json, random, textwrap, time
 from datetime import datetime
 from zoneinfo import ZoneInfo
 import requests
@@ -8,6 +7,8 @@ import requests
 OPENAI_API_KEY = os.environ.get("OPENAI_API_KEY")
 SERPER_API_KEY = os.environ.get("SERPER_API_KEY")  # 任意
 TOPICS_FILE = "topics.txt"
+NUM_POSTS_PER_DAY = 3         # 1日あたり生成記事数
+WAIT_BETWEEN_POSTS = 300      # 秒単位（5分）
 
 # ==== ユーティリティ ====
 def today_jst():
@@ -18,12 +19,15 @@ def slugify(s: str) -> str:
     s = re.sub(r"[^\w\-ぁ-んァ-ヶ一-龥ー]", "", s)
     return s.lower()
 
-def pick_topic():
-    if not os.path.exists(TOPICS_FILE):
-        return "AIトレンド"
-    with open(TOPICS_FILE, encoding="utf-8") as f:
+def load_topics(filename):
+    if not os.path.exists(filename):
+        return ["AIトレンド"]
+    with open(filename, encoding="utf-8") as f:
         topics = [t.strip() for t in f if t.strip()]
-    return random.choice(topics) if topics else "AIトレンド"
+    return topics if topics else ["AIトレンド"]
+
+def pick_topics(topics, k):
+    return random.sample(topics, k=min(k, len(topics)))
 
 def serper_search(q: str, num=5):
     if not SERPER_API_KEY:
@@ -39,8 +43,7 @@ def serper_search(q: str, num=5):
         out.append({"title": it.get("title", ""), "link": it.get("link", ""), "snippet": it.get("snippet", "")})
     return out
 
-def call_openai(prompt: str) -> str:
-    # OpenAIの新SDKに合わせたHTTP呼び出し（依存軽量化のためrequestsを使用）
+def call_openai(prompt, retries=5, backoff=30):
     url = "https://api.openai.com/v1/chat/completions"
     headers = {"Authorization": f"Bearer {OPENAI_API_KEY}", "Content-Type": "application/json"}
     body = {
@@ -49,17 +52,21 @@ def call_openai(prompt: str) -> str:
                      {"role": "user", "content": prompt}],
         "temperature": 0.7,
     }
-    r = requests.post(url, headers=headers, data=json.dumps(body), timeout=90)
-    r.raise_for_status()
-    j = r.json()
-    return j["choices"][0]["message"]["content"].strip()
 
-# ==== メイン処理 ====
-def main():
-    assert OPENAI_API_KEY, "OPENAI_API_KEY が未設定です（GitHub Secretsで設定してください）"
+    for attempt in range(retries):
+        r = requests.post(url, headers=headers, json=body)
+        if r.status_code == 200:
+            return r.json()["choices"][0]["message"]["content"].strip()
+        elif r.status_code == 429:
+            wait = backoff * (attempt + 1)
+            print(f"Rate limit hit. Waiting {wait} seconds before retry...")
+            time.sleep(wait)
+        else:
+            r.raise_for_status()
+    raise Exception("Failed after multiple retries due to rate limiting.")
+
+def generate_post(topic):
     now = today_jst()
-    topic = os.environ.get("TOPIC") or pick_topic()
-
     sources = serper_search(topic, num=5)
     bullet_sources = "\n".join([f"- {s['title']}（{s['link']}）" for s in sources]) if sources else "（参考リンクなし / 生成ベース）"
 
@@ -81,9 +88,8 @@ def main():
 
     content_md = call_openai(prompt)
 
-    # Jekyll用フロントマター
     title = f"{topic}の最新ガイド（{now.strftime('%Y-%m-%d')}）"
-    slug = slugify(topic) or "post"
+    slug = slugify(topic)
     filename = f"_posts/{now.strftime('%Y-%m-%d')}-{slug}.md"
     os.makedirs("_posts", exist_ok=True)
     front = textwrap.dedent(f"""\
@@ -94,11 +100,22 @@ def main():
     tags: [{topic}]
     ---
     """)
-
     with open(filename, "w", encoding="utf-8") as f:
         f.write(front + "\n" + content_md + "\n")
-
     print(f"Generated: {filename}")
+
+# ==== メイン処理 ====
+def main():
+    assert OPENAI_API_KEY, "OPENAI_API_KEY が未設定です（GitHub Secretsで設定）"
+    topics = load_topics(TOPICS_FILE)
+    selected_topics = pick_topics(topics, NUM_POSTS_PER_DAY)
+
+    for idx, topic in enumerate(selected_topics):
+        print(f"Generating post {idx+1}/{len(selected_topics)}: {topic}")
+        generate_post(topic)
+        if idx < len(selected_topics) - 1:
+            print(f"Waiting {WAIT_BETWEEN_POSTS} seconds before next post...")
+            time.sleep(WAIT_BETWEEN_POSTS)
 
 if __name__ == "__main__":
     main()
