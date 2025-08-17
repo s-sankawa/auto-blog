@@ -1,0 +1,23 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>{{ page.title }} | {{ site.title }}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 後でここに AdSense 等の広告コードを貼る -->
+</head>
+<body>
+  <header>
+    <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
+    <p>{{ site.description }}</p>
+    <hr>
+  </header>
+  <main>
+    {{ content }}
+  </main>
+  <hr>
+  <footer>
+    <p>© {{ site.title }}</p>
+  </footer>
+</body>
+</html>
