@@ -1,0 +1,38 @@
+name: Auto Blog Post
+
+on:
+  schedule:
+    - cron: "0 0 * * *"   # 毎日UTC 00:00 = 日本時間 毎朝09:00
+  workflow_dispatch: {}    # 手動実行ボタンも表示
+
+permissions:
+  contents: write
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies (only requests)
+        run: pip install requests tzdata
+
+      - name: Generate post
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SERPER_API_KEY: ${{ secrets.SERPER_API_KEY }}   # 任意
+          TOPIC: ""                                       # 固定テーマにしたい時はここに入れる
+        run: python scripts/generate_post.py
+
+      - name: Commit & Push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add _posts
+          git commit -m "Auto post $(date -u +"%Y-%m-%dT%H:%M:%SZ")" || echo "No changes"
+          git push
