@@ -1,0 +1,4 @@
+description: AI auto-posting blog
+markdown: kramdown
+plugins:
+  - jekyll-feed
