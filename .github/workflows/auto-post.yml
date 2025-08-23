@@ -1,5 +1,8 @@
 name: Generate Pokemon News Post
 
+permissions:
+  contents: write
+
 # 手動実行 & 定期実行
 on:
   workflow_dispatch:        # 手動実行
