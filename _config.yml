@@ -1,5 +1,31 @@
-title: Auto Blog
-description: AI auto-posting blog
-markdown: kramdown
+# --- 基本 ---
+title: "kosimizu.com"
+description: "ポケモン最新ニュースをゆるく楽しくお届けするブログ"
+lang: "ja"
+timezone: "Asia/Tokyo"
+
+# 独自ドメイン
+url: "https://kosimizu.com"
+baseurl: ""   # ルート公開なら空にする
+
+# --- テーマ設定（Beautiful Jekyll） ---
+remote_theme: daattali/beautiful-jekyll
 plugins:
-  - jekyll-feed
+  - jekyll-remote-theme
+
+# ブログ基本
+permalink: /:year/:month/:day/:title/
+markdown: kramdown
+
+# ナビゲーション（お好みで）
+navbar-links:
+  ホーム: /
+  プロフィール: /about
+
+# フッターの表示など（必要に応じて）
+footer-links-active:
+  rss: true
+
+# メタ
+author:
+  name: "kosimizu"
