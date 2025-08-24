@@ -1,31 +1,19 @@
-# --- 基本 ---
-title: "kosimizu.com"
-description: "ポケモン最新ニュースをゆるく楽しくお届けするブログ"
-lang: "ja"
-timezone: "Asia/Tokyo"
-
-# 独自ドメイン
+title: Kosimizu Blog
+email: you@example.com
+description: >- 
+  ポケモンニュースを中心に最新情報をお届けするブログ
+baseurl: "" # サブディレクトリで使う場合は変更
 url: "https://kosimizu.com"
-baseurl: ""   # ルート公開なら空にする
 
-# --- テーマ設定（Beautiful Jekyll） ---
-remote_theme: daattali/beautiful-jekyll
-plugins:
-  - jekyll-remote-theme
+# テーマ指定（GitHub Pages公式テーマ）
+remote_theme: "pages-themes/minimal@v0.2.0"
 
-# ブログ基本
-permalink: /:year/:month/:day/:title/
+# カスタムCSSを読み込む設定
+sass:
+  style: compressed
+
+# 投稿設定
 markdown: kramdown
-
-# ナビゲーション（お好みで）
-navbar-links:
-  ホーム: /
-  プロフィール: /about
-
-# フッターの表示など（必要に応じて）
-footer-links-active:
-  rss: true
-
-# メタ
-author:
-  name: "kosimizu"
+kramdown:
+  input: GFM
+paginate: 5
