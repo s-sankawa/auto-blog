@@ -1,0 +1,43 @@
+/* ----------------------------
+  基本カラー
+---------------------------- */
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  background-color: #fdf6e3; /* 明るいベージュ */
+  color: #333;
+}
+
+/* 記事タイトル */
+h1, h2, h3 {
+  color: #ff6347; /* 鮮やかなオレンジ */
+}
+
+/* 記事カード */
+.post-card {
+  border: 1px solid #eee;
+  padding: 1rem;
+  border-radius: 10px;
+  margin-bottom: 1.5rem;
+  background-color: #fff;
+  transition: box-shadow 0.3s;
+}
+.post-card:hover {
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+/* 記事サムネイル */
+.post-thumbnail {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* リンク */
+a {
+  color: #1e90ff;
+  text-decoration: underline;
+}
+a:hover {
+  color: #104e8b;
+}
