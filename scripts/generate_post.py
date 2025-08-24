@@ -29,7 +29,14 @@ results = res.json()
 # ニュース記事を整形
 if "news" in results and results["news"]:
     item = results["news"][0]
-    news_content = f"- {item.get('title', '')}\n  {item.get('snippet', '')}\n  Source: {item.get('link', '')}"
+    title = item.get("title", "")
+    snippet = item.get("snippet", "")
+    link = item.get("link", "")
+    image_url = item.get("image")  # 画像URLがあれば取得
+
+    news_content = f"- {title}\n  {snippet}\n  Source: {link}"
+    if image_url:
+        news_content += f"\n\n![ニュース画像]({image_url})"
 else:
     news_content = "ニュースは見つかりませんでした。"
 
@@ -47,6 +54,7 @@ prompt = f"""
 - 最新商品の紹介や特徴を含める
 - Markdown形式で見出し(h2,h3)を使う
 - ファンに役立つ豆知識やポイントを加える
+- 画像は記事中に挿入
 - 最後にまとめを記載
 """
 
