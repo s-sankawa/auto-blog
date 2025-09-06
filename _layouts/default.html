@@ -4,20 +4,36 @@
   <meta charset="utf-8">
   <title>{{ page.title }} | {{ site.title }}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- CSS の読み込み -->
+  <link rel="stylesheet" href="{{ '/assets/css/style.css' | relative_url }}">
+
   <!-- 後でここに AdSense 等の広告コードを貼る -->
 </head>
 <body>
-  <header>
-    <h1><a href="{{ '/' | relative_url }}">{{ site.title }}</a></h1>
-    <p>{{ site.description }}</p>
-    <hr>
+  <header class="site-header">
+    <div class="container">
+      <h1 class="site-title">
+        <a href="{{ '/' | relative_url }}">{{ site.title }}</a>
+      </h1>
+      <p class="site-description">{{ site.description }}</p>
+    </div>
   </header>
-  <main>
+
+  <nav class="site-nav">
+    <div class="container">
+      <!-- 今はカテゴリなし、必要ならここにメニューを追加 -->
+    </div>
+  </nav>
+
+  <main class="site-main container">
     {{ content }}
   </main>
-  <hr>
-  <footer>
-    <p>© {{ site.title }}</p>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© {{ site.title }} | Powered by Jekyll</p>
+    </div>
   </footer>
 </body>
 </html>
