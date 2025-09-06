@@ -1,0 +1,82 @@
+/* 全体レイアウト */
+.content {
+  display: grid;
+  grid-template-columns: 3fr 1fr;
+  gap: 2rem;
+  margin: 2rem auto;
+  max-width: 1200px;
+  padding: 0 1rem;
+}
+
+/* ヘッダー */
+.site-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #1a1a4f;
+  padding: 1rem 2rem;
+  color: white;
+}
+.site-header .logo a {
+  color: white;
+  text-decoration: none;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+/* カード型レイアウト */
+.post-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+.post-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  transition: transform 0.2s;
+}
+.post-card:hover {
+  transform: translateY(-5px);
+}
+.post-thumbnail img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+.post-content {
+  padding: 1rem;
+}
+.post-date {
+  display: block;
+  font-size: 0.85rem;
+  color: #888;
+  margin-bottom: 0.5rem;
+}
+.post-title {
+  font-size: 1.2rem;
+}
+
+/* サイドバー */
+.sidebar {
+  background: #f8f8f8;
+  padding: 1rem;
+  border-radius: 8px;
+}
+.recommend-list {
+  list-style: none;
+  padding: 0;
+}
+.recommend-list li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.recommend-list img {
+  width: 60px;
+  height: 40px;
+  object-fit: cover;
+  margin-right: 0.5rem;
+  border-radius: 5px;
+}
