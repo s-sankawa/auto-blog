@@ -1,9 +1,45 @@
-{% for post in site.posts %}
-<div class="post-card">
-  {% if post.image %}
-    <img src="{{ post.image }}" alt="{{ post.title }}" class="post-thumbnail">
-  {% endif %}
-  <h2><a href="{{ post.url }}">{{ post.title }}</a></h2>
-  <p>{{ post.excerpt }}</p>
+---
+layout: default
+---
+
+<div class="site-header">
+  <div class="logo">
+    <h1><a href="{{ site.baseurl }}/">{{ site.title }}</a></h1>
+  </div>
 </div>
-{% endfor %}
+
+<div class="content">
+  <main class="post-grid">
+    {% for post in site.posts %}
+      <article class="post-card">
+        {% if post.image %}
+          <div class="post-thumbnail">
+            <a href="{{ post.url | relative_url }}">
+              <img src="{{ post.image }}" alt="{{ post.title }}">
+            </a>
+          </div>
+        {% endif %}
+        <div class="post-content">
+          <span class="post-date">{{ post.date | date: "%Y-%m-%d" }}</span>
+          <h2 class="post-title">
+            <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+          </h2>
+        </div>
+      </article>
+    {% endfor %}
+  </main>
+
+  <aside class="sidebar">
+    <h3>おすすめ</h3>
+    <ul class="recommend-list">
+      {% for post in site.posts limit:5 %}
+        <li>
+          {% if post.image %}
+            <img src="{{ post.image }}" alt="{{ post.title }}">
+          {% endif %}
+          <a href="{{ post.url | relative_url }}">{{ post.title }}</a>
+        </li>
+      {% endfor %}
+    </ul>
+  </aside>
+</div>
